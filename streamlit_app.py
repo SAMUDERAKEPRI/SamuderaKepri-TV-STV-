@@ -14,17 +14,16 @@ st.markdown("""
     """, unsafe_allow_html=True)
 
 # --- KONFIGURASI VIDEO (4 LINK DROPBOX BAPAK) ---
-# Link otomatis disesuaikan ke dl=1 agar server bisa membaca data video langsung
 v1 = "https://www.dropbox.com/scl/fi/ps5vaxqax73rg7u9q2v51/berita1.mp4?rlkey=7149zc0uq2cbid7pj1p2kln5w&st=wfgkep5k&dl=1"
 v2 = "https://www.dropbox.com/scl/fi/5wtfgxldqikf2ys9radq7/berita2.mp4?rlkey=9rf4uaubek09nv2lqtqx9ho8k&st=zxe3669i&dl=1"
 v3 = "https://www.dropbox.com/scl/fi/am7hw3jalu6dd1fhmyp4j/berita3.mp4?rlkey=rar6rvus2aseni6ea48sfpv9a&st=2w166nnl&dl=1"
 v4 = "https://www.dropbox.com/scl/fi/rn2wy1zv1pewt4kgjemx6/berita4.mp4?rlkey=h8ey50y6sn4xlq4u70gl8y5ek&st=w8lnyq3d&dl=1"
 
-# --- KONFIGURASI YOUTUBE (Kunci Baru 480p Bapak) ---
-STREAM_KEY = "kcbq-72xx-4e9c-kubv-efb4" 
+# --- KONFIGURASI YOUTUBE ---
+STREAM_KEY = "kcbq-72xx-4e9c-kubv-efb4"
 RTMP_URL = f"rtmp://a.rtmp.youtube.com/live2/{STREAM_KEY}"
 
-# Fungsi untuk membuat file daftar putar (Playlist) untuk FFmpeg
+# Fungsi untuk membuat file daftar putar (Playlist)
 def create_playlist():
     with open("list.txt", "w") as f:
         f.write(f"file '{v1}'\n")
@@ -40,9 +39,7 @@ with col1:
         st.info("Menyusun playlist & menyambung ke YouTube Studio...")
         create_playlist()
         
-        # Perintah FFmpeg Concatenate: Memutar v1 -> v2 -> v3 -> v4 secara berurutan
-        # -stream_loop -1 memastikan playlist mengulang terus menerus
-# Perintah FFmpeg yang sudah diperbarui audionya (Anti-Error Audio)
+        # Perintah FFmpeg yang sudah diperbaiki indentasi dan audionya
         cmd = [
             'ffmpeg', '-re', '-f', 'concat', '-safe', '0', 
             '-protocol_whitelist', 'file,http,https,tcp,tls,crypto',
@@ -58,9 +55,9 @@ with col1:
             '-pix_fmt', 'yuv420p', 
             '-g', '40', 
             '-c:a', 'aac', 
-            '-b:a', '128k',       # Dinaikkan ke 128k agar suara jernih
+            '-b:a', '128k', 
             '-ar', '44100', 
-            '-ac', '2',           # Menambah jalur Stereo agar error audio (0) hilang
+            '-ac', '2', 
             '-f', 'flv', 
             RTMP_URL
         ]
