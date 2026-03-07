@@ -18,15 +18,23 @@ st.divider()
 if st.button("🚀 MULAI SIARAN LIVE (MODE STABIL)", use_container_width=True):
     st.info("Menghubungkan ke Dropbox & YouTube... Siaran akan segera muncul.")
     
-    # Perintah FFmpeg untuk memutar video dari Dropbox secara terus-menerus
+# Perintah FFmpeg yang dioptimalkan untuk mengatasi buffering
     cmd = [
         'ffmpeg', '-re', '-stream_loop', '-1', 
         '-i', DROPBOX_URL,
-        '-c:v', 'libx264', '-preset', 'ultrafast', '-tune', 'zerolatency',
-        '-b:v', '2500k', '-maxrate', '2500k', '-bufsize', '5000k', 
-        '-pix_fmt', 'yuv420p', '-g', '60', 
-        '-c:a', 'aac', '-b:a', '128k', '-ar', '44100',
-        '-f', 'flv', RTMP_URL
+        '-c:v', 'libx264', 
+        '-preset', 'ultrafast', 
+        '-tune', 'zerolatency',
+        '-b:v', '1500k',        # Menurunkan bitrate ke 1.5Mbps agar lebih ringan
+        '-maxrate', '1500k', 
+        '-bufsize', '3000k',    # Ukuran buffer yang lebih seimbang
+        '-pix_fmt', 'yuv420p', 
+        '-g', '60',             # Keyframe tetap di 2 detik untuk standar YouTube
+        '-c:a', 'aac', 
+        '-b:a', '96k',          # Mengecilkan sedikit bitrate audio agar transmisi lancar
+        '-ar', '44100', 
+        '-f', 'flv', 
+        RTMP_URL
     ]
     
     try:
