@@ -42,7 +42,8 @@ with col1:
         
         # Perintah FFmpeg Concatenate: Memutar v1 -> v2 -> v3 -> v4 secara berurutan
         # -stream_loop -1 memastikan playlist mengulang terus menerus
-cmd = [
+# Perintah FFmpeg yang sudah diperbarui audionya (Anti-Error Audio)
+        cmd = [
             'ffmpeg', '-re', '-f', 'concat', '-safe', '0', 
             '-protocol_whitelist', 'file,http,https,tcp,tls,crypto',
             '-stream_loop', '-1', 
