@@ -26,14 +26,23 @@ if st.button("🚀 MULAI SIARAN LIVE", use_container_width=True):
 
     st.warning("Menghubungkan ke YouTube Studio... Siaran segera muncul.")
 
-    # Jalankan FFmpeg menggunakan file lokal yang sudah bersih dari error
+# Perintah FFmpeg yang disempurnakan untuk stabilitas YouTube
     cmd = [
         'ffmpeg', '-re', '-stream_loop', '-1', 
         '-i', FILENAME,
-        '-c:v', 'libx264', '-preset', 'ultrafast', '-b:v', '2500k',
-        '-maxrate', '2500k', '-bufsize', '5000k', '-pix_fmt', 'yuv420p',
-        '-g', '60', '-c:a', 'aac', '-b:a', '128k', '-ar', '44100',
-        '-f', 'flv', RTMP_URL
+        '-c:v', 'libx264', 
+        '-preset', 'ultrafast', 
+        '-tune', 'zerolatency', # Mengurangi jeda agar cepat muncul
+        '-b:v', '2500k', 
+        '-maxrate', '2500k', 
+        '-bufsize', '5000k', 
+        '-pix_fmt', 'yuv420p', # Format warna standar YouTube
+        '-g', '60', # Keyframe interval (sangat penting untuk YouTube)
+        '-c:a', 'aac', 
+        '-b:a', '128k', 
+        '-ar', '44100', 
+        '-f', 'flv', 
+        RTMP_URL
     ]
     
     try:
