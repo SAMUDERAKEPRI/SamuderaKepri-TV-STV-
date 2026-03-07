@@ -1,38 +1,27 @@
 import streamlit as st
 import subprocess
-import os
 
+# Tampilan Dashboard STV
 st.set_page_config(page_title="STV Cloud Control", page_icon="🔴")
-st.title("📺 SamuderaKepri TV (STV)")
+st.markdown("<h1 style='text-align: center; color: #e60000;'>📺 SamuderaKepri TV (STV)</h1>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center;'>Status: Cloud Broadcaster Ready</p>", unsafe_allow_html=True)
 
-# --- KONFIGURASI ---
-DRIVE_URL = "https://drive.google.com/file/d/1tTWI43qX0C5RUvcI3Tt_QZKc5YHlww-k/view?usp=sharing"
+# --- KONFIGURASI DROPBOX (DIRECT LINK) ---
+DROPBOX_URL = "https://www.dropbox.com/scl/fi/rp89eo0gl7fwv4zb2flnr/video_berita.mp4?rlkey=tspflo2za6uh0qcr94z08u8xr&st=xwuetiu3&dl=1"
+
+# --- KONFIGURASI YOUTUBE ---
 STREAM_KEY = "p8fx-xjxz-gta7-1gaq-9jct" 
 RTMP_URL = f"rtmp://a.rtmp.youtube.com/live2/{STREAM_KEY}"
-FILENAME = "video_siaran_stv.mp4"
 
-# Fungsi untuk membersihkan proses FFmpeg yang nyangkut
-def kill_old_processes():
-    try:
-        subprocess.run(['pkill', '-f', 'ffmpeg'], check=False)
-    except:
-        pass
+st.divider()
 
-if st.button("🚀 MULAI SIARAN LIVE", use_container_width=True):
-    # 1. Bersihkan dulu siaran lama agar tidak bentrok
-    kill_old_processes()
+if st.button("🚀 MULAI SIARAN LIVE (MODE STABIL)", use_container_width=True):
+    st.info("Menghubungkan ke Dropbox & YouTube... Siaran akan segera muncul.")
     
-    # 2. Cek file video
-    if not os.path.exists(FILENAME):
-        with st.spinner("Mengunduh video..."):
-            subprocess.run(['yt-dlp', '-o', FILENAME, DRIVE_URL], check=True)
-
-    st.success("Memulai transmisi bersih ke YouTube...")
-
-    # 3. Jalankan FFmpeg dengan parameter yang disukai YouTube
+    # Perintah FFmpeg untuk memutar video dari Dropbox secara terus-menerus
     cmd = [
         'ffmpeg', '-re', '-stream_loop', '-1', 
-        '-i', FILENAME,
+        '-i', DROPBOX_URL,
         '-c:v', 'libx264', '-preset', 'ultrafast', '-tune', 'zerolatency',
         '-b:v', '2500k', '-maxrate', '2500k', '-bufsize', '5000k', 
         '-pix_fmt', 'yuv420p', '-g', '60', 
@@ -40,13 +29,20 @@ if st.button("🚀 MULAI SIARAN LIVE", use_container_width=True):
         '-f', 'flv', RTMP_URL
     ]
     
-    process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True)
-    st.info("Status: Mengudara (Pastikan tab YouTube Studio dalam kondisi Segar/Refresh)")
-    
-    log_area = st.empty()
-    for line in process.stdout:
-        log_area.text(line)
+    try:
+        # Menjalankan proses streaming di background server
+        process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True)
+        st.success("✅ SAMUDERAKEPRI TV SEDANG LIVE!")
+        
+        # Monitor Log Aktivitas
+        with st.expander("Lihat Monitor Aktivitas Server"):
+            log_area = st.empty()
+            for line in process.stdout:
+                log_area.text(line)
+                
+    except Exception as e:
+        st.error(f"Terjadi kesalahan koneksi: {e}")
 
-if st.button("⏹️ HENTIKAN TOTAL"):
-    kill_old_processes()
-    st.warning("Semua siaran dihentikan.")
+st.sidebar.markdown("---")
+st.sidebar.write("CEO: Ronny Paslan, S.Sos")
+st.sidebar.write("Media: SamuderaKepri.co.id")
