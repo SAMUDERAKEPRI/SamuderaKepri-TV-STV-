@@ -42,23 +42,24 @@ with col1:
         
         # Perintah FFmpeg Concatenate: Memutar v1 -> v2 -> v3 -> v4 secara berurutan
         # -stream_loop -1 memastikan playlist mengulang terus menerus
-        cmd = [
+cmd = [
             'ffmpeg', '-re', '-f', 'concat', '-safe', '0', 
             '-protocol_whitelist', 'file,http,https,tcp,tls,crypto',
-            '-stream_loop', '-1',             
+            '-stream_loop', '-1', 
             '-i', 'list.txt',
             '-c:v', 'libx264', 
             '-preset', 'ultrafast', 
             '-tune', 'zerolatency',
-            '-b:v', '650k',                   # Bitrate rendah agar stabil
+            '-b:v', '650k', 
             '-maxrate', '750k', 
             '-bufsize', '1500k', 
-            '-s', '854x480',                  # Resolusi 480p sesuai kunci manual Bapak
+            '-s', '854x480', 
             '-pix_fmt', 'yuv420p', 
-            '-g', '40',                       
+            '-g', '40', 
             '-c:a', 'aac', 
-            '-b:a', '64k',                    
+            '-b:a', '128k',       # Dinaikkan ke 128k agar suara jernih
             '-ar', '44100', 
+            '-ac', '2',           # Menambah jalur Stereo agar error audio (0) hilang
             '-f', 'flv', 
             RTMP_URL
         ]
