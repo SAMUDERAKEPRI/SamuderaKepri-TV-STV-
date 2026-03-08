@@ -8,43 +8,30 @@ st.set_page_config(page_title="STV Playlist Control", page_icon="🔴")
 st.markdown("""
     <div style='text-align: center;'>
         <h1 style='color: #e60000; margin-bottom: 0;'>📺 SamuderaKepri TV (STV)</h1>
-        <p style='font-size: 1.1em; color: #555;'>Mode: Playlist 4 Berita (Ultra-Stabil 480p)</p>
+        <p style='font-size: 1.1em; color: #555;'>Mode: Siaran Berita Baru (Ultra-Stabil 480p)</p>
         <hr style='border: 1px solid #e60000;'>
     </div>
     """, unsafe_allow_html=True)
 
-# --- KONFIGURASI VIDEO (4 LINK DROPBOX BAPAK) ---
-v1 = "https://www.dropbox.com/scl/fi/ps5vaxqax73rg7u9q2v51/berita1.mp4?rlkey=7149zc0uq2cbid7pj1p2kln5w&st=wfgkep5k&dl=1"
-v2 = "https://www.dropbox.com/scl/fi/5wtfgxldqikf2ys9radq7/berita2.mp4?rlkey=9rf4uaubek09nv2lqtqx9ho8k&st=zxe3669i&dl=1"
-v3 = "https://www.dropbox.com/scl/fi/am7hw3jalu6dd1fhmyp4j/berita3.mp4?rlkey=rar6rvus2aseni6ea48sfpv9a&st=2w166nnl&dl=1"
-v4 = "https://www.dropbox.com/scl/fi/rn2wy1zv1pewt4kgjemx6/berita4.mp4?rlkey=h8ey50y6sn4xlq4u70gl8y5ek&st=w8lnyq3d&dl=1"
+# --- KONFIGURASI VIDEO BARU BAPAK ---
+# Judul: Demokrasi di Titik Nadir
+VIDEO_URL = "https://www.dropbox.com/scl/fi/7le01a9c5abgx2dyzve4m/Demokrasi-di-Titik-Nadir-Antara-Makan-Gratis-Penjara-dan-Amputasi-Digital.mp4?rlkey=xa4fybiifu38zmp2zlpl48ttw&st=6tpp0a3b&dl=1"
 
-# --- KONFIGURASI YOUTUBE ---
-STREAM_KEY = "kcbq-72xx-4e9c-kubv-efb4"
+# --- KONFIGURASI YOUTUBE BARU BAPAK ---
+STREAM_KEY = "193h-u5vb-jxaq-jqz7-c65b"
 RTMP_URL = f"rtmp://a.rtmp.youtube.com/live2/{STREAM_KEY}"
-
-# Fungsi untuk membuat file daftar putar (Playlist)
-def create_playlist():
-    with open("list.txt", "w") as f:
-        f.write(f"file '{v1}'\n")
-        f.write(f"file '{v2}'\n")
-        f.write(f"file '{v3}'\n")
-        f.write(f"file '{v4}'\n")
 
 # --- TOMBOL KONTROL ---
 col1, col2 = st.columns(2)
 
 with col1:
-    if st.button("🚀 MULAI SIARAN PLAYLIST", use_container_width=True):
-        st.info("Menyusun playlist & menyambung ke YouTube Studio...")
-        create_playlist()
+    if st.button("🚀 MULAI SIARAN LIVE", use_container_width=True):
+        st.info("Menghubungkan video baru ke YouTube Studio...")
         
-        # Perintah FFmpeg yang sudah diperbaiki indentasi dan audionya
+        # Perintah FFmpeg: Stabil, Ringan, 480p, Audio 128k
         cmd = [
-            'ffmpeg', '-re', '-f', 'concat', '-safe', '0', 
-            '-protocol_whitelist', 'file,http,https,tcp,tls,crypto',
-            '-stream_loop', '-1', 
-            '-i', 'list.txt',
+            'ffmpeg', '-re', '-stream_loop', '-1', 
+            '-i', VIDEO_URL,
             '-c:v', 'libx264', 
             '-preset', 'ultrafast', 
             '-tune', 'zerolatency',
@@ -63,11 +50,11 @@ with col1:
         ]
         
         try:
-            # Bersihkan proses lama agar tidak bentrok
+            # Bersihkan proses lama agar tidak bentrok dengan kunci baru
             subprocess.run(['pkill', '-f', 'ffmpeg'], check=False)
             
             process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True)
-            st.success("✅ STV MENGUDARA DENGAN 4 BERITA!")
+            st.success("✅ STV MENGUDARA DENGAN BERITA BARU!")
             
             # Monitor Aktivitas Server
             with st.expander("Monitor Status Server (Real-time)"):
@@ -87,4 +74,4 @@ with col2:
 st.sidebar.write("---")
 st.sidebar.write("**CEO:** Ronny Paslan, S.Sos")
 st.sidebar.write("**Media:** SamuderaKepri.co.id")
-st.sidebar.info("Tips: Setelah klik Save di GitHub, lakukan 'Reboot App' di Streamlit Cloud agar perubahan aktif.")
+st.sidebar.info("Tips: Setelah klik Save di GitHub, lakukan 'Reboot App' di Streamlit Cloud agar Kunci YouTube baru Bapak aktif.")
