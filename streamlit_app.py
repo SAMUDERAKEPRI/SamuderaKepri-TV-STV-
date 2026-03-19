@@ -15,7 +15,7 @@ st.markdown("""
 
 # --- KONFIGURASI BARU BAPAK ---
 # Link Dropbox diubah ke dl=1 agar bisa dibaca FFmpeg sebagai file video mentah
-VIDEO_URL = "https://www.dropbox.com/scl/fi/ahe3kgkelahhz2yeorcu6/0318-1.mp4?rlkey=ooz18wtdvoi1yvth64ru4b5b0&st=9wec0fb4&dl=1"
+VIDEO_URL = "https://www.dropbox.com/scl/fi/bgpttrl7e50j2xa2mba5n/11-1.mp4?rlkey=akl8q4sj869lzhns4uc45n9f0&e=1&st=tgv5ljg7&dl=1"
 
 # Kunci Live Baru Bapak
 STREAM_KEY = "4yv5-4vrk-1j01-yfrd-ezfa"
